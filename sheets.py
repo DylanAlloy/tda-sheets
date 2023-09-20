@@ -65,6 +65,14 @@ class Sheet:
         except HttpError as error:
             print(f"An error occurred: {error}")
             return error
+    def clear_values(self):
+        service = build('sheets', 'v4', credentials=self.creds)
+        body = {
+            'values': []
+        }
+        service.spreadsheets().values().update(
+            spreadsheetId=self.s_id, range='DATA!A2:AZ500',
+            valueInputOption='USER_ENTERED', body=body).execute()
     def update_values(self, s_range, values, contracts, _sheet):
         try:
             current = self.get_values(s_range+str(len(contracts)+1))
@@ -113,6 +121,7 @@ class Sheet:
 # Random below as place holder - not actual information 
 sheet = Sheet('')
 sheet.login()
+sheet.clear_values()
 SYMBOL = sheet.get_values("INPUT!A2:A500")
 LOWER_BEAST = sheet.get_values("INPUT!B2:B500")
 UPPER_BEAST = sheet.get_values("INPUT!C2:C500")

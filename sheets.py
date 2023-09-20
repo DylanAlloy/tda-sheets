@@ -67,6 +67,7 @@ class Sheet:
         low_beast_count = _sheet.get_values("DATA!D2:A500")
         high_beast_count = _sheet.get_values("DATA!E2:A500")
         for contract, contract_data in contracts.items():
+            print(contract_data)
             for value in values:
                 if contract == value['key']:
                     contract_data.update(value)

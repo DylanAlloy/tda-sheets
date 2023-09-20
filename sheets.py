@@ -19,7 +19,11 @@ def TDA(api_key, acct_id, contracts, sheet):
       def print_message(data):
         _ = json.dumps(data['content'])
         _ = json.loads(_)
-        sheet.update_values('DATA!A1:AZ', _, contracts, sheet)
+        print(_)
+        try:
+            sheet.update_values('DATA!A2:AZ500', _, contracts, sheet)
+        except Exception as e:
+            print(e)
 
       stream_client.add_level_one_option_handler(print_message)
       await stream_client.level_one_option_subs(list(contracts.keys()))
@@ -62,8 +66,11 @@ class Sheet:
             print(f"An error occurred: {error}")
             return error
     def update_values(self, s_range, values, contracts, _sheet):
-        current = self.get_values(s_range+str(len(contracts)+1))
-        current = list([x for x in current['values']])
+        try:
+            current = self.get_values(s_range+str(len(contracts)+1))
+            current = list([x for x in current['values']])
+        except Exception as e:
+            print(e)
         low_beast_count = _sheet.get_values("DATA!D2:A500")
         high_beast_count = _sheet.get_values("DATA!E2:A500")
         for contract, contract_data in contracts.items():
@@ -79,13 +86,12 @@ class Sheet:
             except Exception as e:
                 print(e)
             
-            contract_data['lower_diff'] = contract_data['ASK'] - float(contract_data['l_beast'])
-            contract_data['upper_diff'] = contract_data['ASK'] - float(contract_data['u_beast'])
+            contract_data['lower_diff'] = float(contract_data['LAST_PRICE']) - float(contract_data['l_beast'])
+            contract_data['upper_diff'] = float(contract_data['LAST_PRICE']) - float(contract_data['u_beast'])
 
-        header = ['lower_diff', 'upper_diff', 'ts', 'l_beast', 'u_beast', 'l_count', 'u_count', 'symbol', 'key', 'delayed', 'assetMainType', 'cusip', 'DESCRIPTION', 'ASK_PRICE', 'LAST_PRICE', 'HIGH_PRICE', 'LOW_PRICE', 'CLOSE_PRICE', 'TOTAL_VOLUME', 'OPEN_INTEREST', 'VOLATILITY', 'QUOTE_TIME', 'TRADE_TIME', 'MONEY_INTRINSIC_VALUE', 'QUOTE_DAY', 'TRADE_DAY', 'EXPIRATION_YEAR', 'MULTIPLIER', 'DIGITS', 'OPEN_PRICE', 'ASK_SIZE', 'LAST_SIZE', 'NET_CHANGE', 'STRIKE_PRICE', 'CONTRACT_TYPE', 'UNDERLYING', 'EXPIRATION_MONTH', 'TIME_VALUE', 'EXPIRATION_DAY', 'DELTA', 'GAMMA', 'THETA', 'VEGA', 'RHO', 'SECURITY_STATUS', 'THEORETICAL_OPTION_VALUE', 'UNDERLYING_PRICE', 'UV_EXPIRATION_TYPE', 'MARK']
+        # header = ['lower_diff', 'upper_diff', 'ts', 'l_beast', 'u_beast', 'l_count', 'u_count', 'symbol', 'key', 'delayed', 'assetMainType', 'cusip', 'DESCRIPTION', 'ASK_PRICE', 'LAST_PRICE', 'HIGH_PRICE', 'LOW_PRICE', 'CLOSE_PRICE', 'TOTAL_VOLUME', 'OPEN_INTEREST', 'VOLATILITY', 'QUOTE_TIME', 'TRADE_TIME', 'MONEY_INTRINSIC_VALUE', 'QUOTE_DAY', 'TRADE_DAY', 'EXPIRATION_YEAR', 'MULTIPLIER', 'DIGITS', 'OPEN_PRICE', 'ASK_SIZE', 'LAST_SIZE', 'NET_CHANGE', 'STRIKE_PRICE', 'CONTRACT_TYPE', 'UNDERLYING', 'EXPIRATION_MONTH', 'TIME_VALUE', 'EXPIRATION_DAY', 'DELTA', 'GAMMA', 'THETA', 'VEGA', 'RHO', 'SECURITY_STATUS', 'THEORETICAL_OPTION_VALUE', 'UNDERLYING_PRICE', 'UV_EXPIRATION_TYPE', 'MARK']
         upsert = [[str(v) for v in list(x.values())] for x in list(contracts.values())]
         all_rows = []
-        all_rows.append(header)
         for row in upsert:
             all_rows.append(row)
         try:

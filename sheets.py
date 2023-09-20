@@ -106,9 +106,9 @@ class Sheet:
 # Random below as place holder - not actual information 
 sheet = Sheet('')
 sheet.login()
-SYMBOL = sheet.get_values("INPUT!A2:B500")
-LOWER_BEAST = sheet.get_values("INPUT!B2:F500")
-UPPER_BEAST = sheet.get_values("INPUT!C2:G500")
+SYMBOL = sheet.get_values("INPUT!A2:A500")
+LOWER_BEAST = sheet.get_values("INPUT!B2:B500")
+UPPER_BEAST = sheet.get_values("INPUT!C2:C500")
 inputs = {}
 TDA_SYMBOLS = []
 LOWERS, UPPERS = [], []

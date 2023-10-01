@@ -7,10 +7,11 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+import json, os
 
 def TDA(api_key, acct_id, contracts, sheet):
   # this is your tda token, rename if you want but change this if you do
-  client = client_from_token_file('./tda_token.json',api_key)
+  client = tda.auth.client_from_token_file('./tda_token.json',api_key)
   stream_client = StreamClient(client, account_id=acct_id)
   async def read_stream():
       await stream_client.login()
@@ -93,7 +94,7 @@ class Sheet:
                     contract_data['l_count'] += low_beast_count[contract] + 1
             except Exception as e:
                 print(e)
-            
+            contract_data['ts'] = str(datetime.now())
             contract_data['lower_diff'] = float(contract_data['LAST_PRICE']) - float(contract_data['l_beast'])
             contract_data['upper_diff'] = float(contract_data['LAST_PRICE']) - float(contract_data['u_beast'])
 

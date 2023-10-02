@@ -11,7 +11,7 @@ import json, os
 
 def TDA(api_key, acct_id, contracts, sheet):
   # this is your tda token, rename if you want but change this if you do
-  client = tda.auth.client_from_token_file('./tda_token.json',api_key)
+  client = client_from_token_file('./tda_token.json',api_key)
   stream_client = StreamClient(client, account_id=acct_id)
   async def read_stream():
       await stream_client.login()

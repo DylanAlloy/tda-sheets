@@ -143,16 +143,16 @@ u_count = [x[0] for x in UPPER_BEAST['values']]
 lower_diff = [x[0] for x in UPPER_BEAST['values']]
 upper_diff = [x[0] for x in UPPER_BEAST['values']]
 dates = [str(datetime.now()) for x in SYMBOL['values']]
-for lowers, uppers, d, c, l_b, u_b, l_count, u_count, s, tda in zip(lower_diff, upper_diff, dates, contracts, l_beasts, u_beasts, l_count, u_count, symbols, TDA_SYMBOLS):
+for s, lowers, uppers, d, c, l_b, u_b, l_count, u_count, tda in zip(symbols, lower_diff, upper_diff, dates, contracts, l_beasts, u_beasts, l_count, u_count, TDA_SYMBOLS):
     inputs[tda] = {
-            "lower_diff": lowers
+            "symbol": s
+            , "lower_diff": lowers
             , "upper_diff": uppers
             , "date": d
             , "l_beast": l_b
             , "u_beast": u_b
             , "l_count": 0
             , "u_count": 0
-            , "symbol": s
         }
 # api key and account id
 # Random below as place holder - not actual information 

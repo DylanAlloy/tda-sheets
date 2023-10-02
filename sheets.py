@@ -82,21 +82,22 @@ class Sheet:
             print(e)
         low_beast_count = _sheet.get_values("DATA!D2:A500")
         high_beast_count = _sheet.get_values("DATA!E2:A500")
-        for contract, contract_data in contracts.items():
+        for index, (contract, contract_data) in enumerate(contracts.items()):
             print(contract_data)
             for value in values:
                 if contract == value['key']:
                     contract_data.update(value)
             try:
                 if contract_data['MARK'] >= float(contract_data['u_beast']):
-                    contract_data['u_count'] += high_beast_count[contract] + 1
+                    contract_data['u_count'] += high_beast_count[index] + 1
                 elif contract_data['MARK'] <= float(contract_data['l_beast']):
-                    contract_data['l_count'] += low_beast_count[contract] + 1
+                    contract_data['l_count'] += low_beast_count[index] + 1
             except Exception as e:
                 print(e)
-            contract_data['ts'] = str(datetime.now())
+            contract_data['ts'] = [str(datetime.now()) for x in range(len(contract_data))]
             contract_data['lower_diff'] = float(contract_data['LAST_PRICE']) - float(contract_data['l_beast'])
             contract_data['upper_diff'] = float(contract_data['LAST_PRICE']) - float(contract_data['u_beast'])
+
 
         # header = ['lower_diff', 'upper_diff', 'ts', 'l_beast', 'u_beast', 'l_count', 'u_count', 'symbol', 'key', 'delayed', 'assetMainType', 'cusip', 'DESCRIPTION', 'ASK_PRICE', 'LAST_PRICE', 'HIGH_PRICE', 'LOW_PRICE', 'CLOSE_PRICE', 'TOTAL_VOLUME', 'OPEN_INTEREST', 'VOLATILITY', 'QUOTE_TIME', 'TRADE_TIME', 'MONEY_INTRINSIC_VALUE', 'QUOTE_DAY', 'TRADE_DAY', 'EXPIRATION_YEAR', 'MULTIPLIER', 'DIGITS', 'OPEN_PRICE', 'ASK_SIZE', 'LAST_SIZE', 'NET_CHANGE', 'STRIKE_PRICE', 'CONTRACT_TYPE', 'UNDERLYING', 'EXPIRATION_MONTH', 'TIME_VALUE', 'EXPIRATION_DAY', 'DELTA', 'GAMMA', 'THETA', 'VEGA', 'RHO', 'SECURITY_STATUS', 'THEORETICAL_OPTION_VALUE', 'UNDERLYING_PRICE', 'UV_EXPIRATION_TYPE', 'MARK']
         upsert = [[str(v) for v in list(x.values())] for x in list(contracts.values())]
